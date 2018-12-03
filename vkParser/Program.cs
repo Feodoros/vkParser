@@ -14,29 +14,22 @@ namespace vkParser
     {
         static void Main(string[] args)
         {
+            string pathToSave = "C:\\Users\\fzhil\\Downloads\\vk\\";
             string content = "";
-            string command = @"C:\Phyton37\Scripts\vktop.exe";
-
-            string s1 = "https://vk.com/ru9gag";
-            string s2 = "https://vk.com/amfet1";
-            string s3 = "https://vk.com/pixel_memes";
-            string s4 = "https://vk.com/greatmem";
-            string s5 = "https://vk.com/dobriememes";
-            string s6 = "https://vk.com/mudakoff";
 
             //          паблик     топ 10  (.)  дней назад (10)
-            string arg1 = s1 + " --top 1 -w 8 -d 10";
-            string arg2 = s2 + " --top 1 -w 8 -d 10";
-            string arg3 = s3 + " --top 1 -w 8 -d 10";
-            string arg4 = s4 + " --top 1 -w 8 -d 10";
-            string arg5 = s5 + " --top 1 -w 8 -d 10";
-            string arg6 = s6 + " --top 1 -w 8 -d 10";
+            string arg1 = Const.s1 + " --top 2 -w 8 -d 10";
+            string arg2 = Const.s2 + " --top 2 -w 8 -d 10";
+            string arg3 = Const.s3 + " --top 2 -w 8 -d 10";
+            string arg4 = Const.s4 + " --top 2 -w 8 -d 10";
+            string arg5 = Const.s5 + " --top 2 -w 8 -d 10";
+            string arg6 = Const.s6 + " --top 2 -w 8 -f 01.01.2015";
 
             Task task1 = Task.Run(() =>
             {
                 Console.WriteLine("1");
                 // создаем процесс command с параметрами arg
-                ProcessStartInfo psiOpt = new ProcessStartInfo(command, arg1);
+                ProcessStartInfo psiOpt = new ProcessStartInfo(Const.command, arg1);
 
                 // скрываем окно запущенного процесса
                 psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
@@ -58,116 +51,119 @@ namespace vkParser
             });
 
 
-            //Task task2 = task1.ContinueWith(ant =>
-            //{
-            //    Console.WriteLine("2");
-            //    ProcessStartInfo psiOpt = new ProcessStartInfo(command, arg2);
-            //    psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
-            //    psiOpt.RedirectStandardOutput = true;
-            //    psiOpt.UseShellExecute = false;
-            //    psiOpt.CreateNoWindow = true;
-            //    Process procCommand = Process.Start(psiOpt);
-            //    StreamReader srIncoming = procCommand.StandardOutput;
-            //    content += srIncoming.ReadToEnd();
-            //    procCommand.WaitForExit();
-            //});
-
-            //Task task3 = task2.ContinueWith(ant =>
-            //{
-            //    Console.WriteLine("3");
-            //    ProcessStartInfo psiOpt = new ProcessStartInfo(command, arg3);
-            //    psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
-            //    psiOpt.RedirectStandardOutput = true;
-            //    psiOpt.UseShellExecute = false;
-            //    psiOpt.CreateNoWindow = true;
-            //    Process procCommand = Process.Start(psiOpt);
-            //    StreamReader srIncoming = procCommand.StandardOutput;
-            //    content += srIncoming.ReadToEnd();
-            //    procCommand.WaitForExit();
-            //});
-
-            //Task task4 = task3.ContinueWith(ant =>
-            //{
-            //    Console.WriteLine("4");
-            //    ProcessStartInfo psiOpt = new ProcessStartInfo(command, arg4);
-            //    psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
-            //    psiOpt.RedirectStandardOutput = true;
-            //    psiOpt.UseShellExecute = false;
-            //    psiOpt.CreateNoWindow = true;
-            //    Process procCommand = Process.Start(psiOpt);
-            //    StreamReader srIncoming = procCommand.StandardOutput;
-            //    content += srIncoming.ReadToEnd();
-            //    procCommand.WaitForExit();
-            //});
-
-            //Task task5 = task4.ContinueWith(ant =>
-            //{
-            //    Console.WriteLine("5");
-            //    ProcessStartInfo psiOpt = new ProcessStartInfo(command, arg5);
-            //    psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
-            //    psiOpt.RedirectStandardOutput = true;
-            //    psiOpt.UseShellExecute = false;
-            //    psiOpt.CreateNoWindow = true;
-            //    Process procCommand = Process.Start(psiOpt);
-            //    StreamReader srIncoming = procCommand.StandardOutput;
-            //    content += srIncoming.ReadToEnd();
-            //    procCommand.WaitForExit();
-            //});
-
-            //Task task6 = task5.ContinueWith(ant =>
-            //{
-            //    Console.WriteLine("6");
-            //    ProcessStartInfo psiOpt = new ProcessStartInfo(command, arg6);
-            //    psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
-            //    psiOpt.RedirectStandardOutput = true;
-            //    psiOpt.UseShellExecute = false;
-            //    psiOpt.CreateNoWindow = true;
-            //    Process procCommand = Process.Start(psiOpt);
-            //    StreamReader srIncoming = procCommand.StandardOutput;
-            //    content += srIncoming.ReadToEnd();
-            //    procCommand.WaitForExit();
-            //});
-
-            Task finalTask = Task.Factory.ContinueWhenAll(new Task[] { task1, /*task2, task3, task4, task5, task6*/ }, ant =>
+            Task task2 = task1.ContinueWith(ant =>
             {
+                Console.WriteLine("2");
+                ProcessStartInfo psiOpt = new ProcessStartInfo(Const.command, arg2);
+                psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
+                psiOpt.RedirectStandardOutput = true;
+                psiOpt.UseShellExecute = false;
+                psiOpt.CreateNoWindow = true;
+                Process procCommand = Process.Start(psiOpt);
+                StreamReader srIncoming = procCommand.StandardOutput;
+                content += srIncoming.ReadToEnd();
+                procCommand.WaitForExit();
+            });
+
+            Task task3 = task2.ContinueWith(ant =>
+            {
+                Console.WriteLine("3");
+                ProcessStartInfo psiOpt = new ProcessStartInfo(Const.command, arg3);
+                psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
+                psiOpt.RedirectStandardOutput = true;
+                psiOpt.UseShellExecute = false;
+                psiOpt.CreateNoWindow = true;
+                Process procCommand = Process.Start(psiOpt);
+                StreamReader srIncoming = procCommand.StandardOutput;
+                content += srIncoming.ReadToEnd();
+                procCommand.WaitForExit();
+            });
+
+            Task task4 = task3.ContinueWith(ant =>
+            {
+                Console.WriteLine("4");
+                ProcessStartInfo psiOpt = new ProcessStartInfo(Const.command, arg4);
+                psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
+                psiOpt.RedirectStandardOutput = true;
+                psiOpt.UseShellExecute = false;
+                psiOpt.CreateNoWindow = true;
+                Process procCommand = Process.Start(psiOpt);
+                StreamReader srIncoming = procCommand.StandardOutput;
+                content += srIncoming.ReadToEnd();
+                procCommand.WaitForExit();
+            });
+
+            Task task5 = task4.ContinueWith(ant =>
+            {
+                Console.WriteLine("5");
+                ProcessStartInfo psiOpt = new ProcessStartInfo(Const.command, arg5);
+                psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
+                psiOpt.RedirectStandardOutput = true;
+                psiOpt.UseShellExecute = false;
+                psiOpt.CreateNoWindow = true;
+                Process procCommand = Process.Start(psiOpt);
+                StreamReader srIncoming = procCommand.StandardOutput;
+                content += srIncoming.ReadToEnd();
+                procCommand.WaitForExit();
+            });
+
+            Task task6 = task5.ContinueWith(ant =>
+            {
+                Console.WriteLine("6");
+                ProcessStartInfo psiOpt = new ProcessStartInfo(Const.command, arg6);
+                psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
+                psiOpt.RedirectStandardOutput = true;
+                psiOpt.UseShellExecute = false;
+                psiOpt.CreateNoWindow = true;
+                Process procCommand = Process.Start(psiOpt);
+                StreamReader srIncoming = procCommand.StandardOutput;
+                content += srIncoming.ReadToEnd();
+                procCommand.WaitForExit();
+            });
+
+            Task finalTask = Task.Factory.ContinueWhenAll(new Task[] { task1, task2, task3, task4, task5, task6 }, ant =>
+            {
+                int i = 0;
                 Console.WriteLine(content);
                 List<string> ListURLImages = Parser_Images_From_Posts(content);
 
                 using (WebClient client = new WebClient())
                 {
-                    client.DownloadFile(ListURLImages[0], AppDomain.CurrentDomain.BaseDirectory + "test.jpg");
-                    Console.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
+                    foreach (string image in ListURLImages)
+                    {
+                        client.DownloadFile(image, pathToSave + i.ToString() + ".jpg");
+                        i++;
+                    }
                 }
 
-
+                Console.WriteLine("Готово.");
             });
 
-
+           
             Console.ReadKey();
         }
 
 
         public static List<string> Parser_Images_From_Posts(string content)
         {
+            string HTML_Posts_Text = "";
             string[] arrayContent = content.Split(' ');
             List<string> s1 = arrayContent.ToList().FindAll(i => i.StartsWith("http") == true);
-
-            List<string> htmlList = new List<string>();
 
             if (s1.Count > 0)
             {
                 foreach (string match in s1)
                 {
                     Console.WriteLine(match);
-                    htmlList.Add(new WebClient().DownloadString(new Uri(match)));
+                    HTML_Posts_Text += new WebClient().DownloadString(new Uri(match));
                 }
-            }            
+            }
             else
             {
                 Console.WriteLine("Ссылок не нашел.");
             }
 
-            string[] arrayContentParsed = htmlList[0].Split('(', ')');
+            string[] arrayContentParsed = HTML_Posts_Text.Split('(', ')');
             List<string> ListURLImages = arrayContentParsed.ToList().FindAll(i => i.StartsWith("https://pp") == true);
 
             return ListURLImages;
