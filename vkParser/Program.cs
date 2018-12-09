@@ -1,12 +1,12 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using AngleSharp;
-using AngleSharp.Dom;
+using System.Web;
 
 namespace vkParser
 {
@@ -23,7 +23,7 @@ namespace vkParser
             string arg3 = Const.s3 + " --top 2 -w 8 -d 10";
             string arg4 = Const.s4 + " --top 2 -w 8 -d 10";
             string arg5 = Const.s5 + " --top 2 -w 8 -d 10";
-            string arg6 = Const.s6 + " --top 2 -w 8 -f 01.01.2015";
+            string arg6 = Const.s6 + " --top 2 -w 8 -f 01.10.2018";
 
             Task task1 = Task.Run(() =>
             {
@@ -131,31 +131,42 @@ namespace vkParser
                 {
                     foreach (string image in ListURLImages)
                     {
-                        client.DownloadFile(image, pathToSave + i.ToString() + ".jpg");
                         i++;
+                        client.DownloadFile(image, pathToSave + i.ToString() + ".jpg");
                     }
                 }
 
                 Console.WriteLine("Готово.");
             });
 
-           
+
             Console.ReadKey();
         }
 
 
         public static List<string> Parser_Images_From_Posts(string content)
         {
-            string HTML_Posts_Text = "";
+            int i1 = 0;
             string[] arrayContent = content.Split(' ');
-            List<string> s1 = arrayContent.ToList().FindAll(i => i.StartsWith("http") == true);
+            List<string> s1 = arrayContent.ToList().FindAll(i => i.StartsWith("http") == true); //Список ссылок на посты
+            List<string> List_HTML_Data = new List<string>();  //Список постов в формате HTML
+            List<string> List_URL_Images = new List<string>(); //Список адресов картинок из постов
 
             if (s1.Count > 0)
             {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Ссылки на посты:");
+                Console.ForegroundColor = ConsoleColor.White;
+
                 foreach (string match in s1)
                 {
-                    Console.WriteLine(match);
-                    HTML_Posts_Text += new WebClient().DownloadString(new Uri(match));
+                    i1++;
+                    Console.WriteLine(i1.ToString() + " " + match);
+
+                    if (ScrapeData(match) != null)
+                        List_URL_Images.Add(ScrapeData(match));
+                    else
+                        Console.WriteLine(match + " - пост из нескольких картинок.");
                 }
             }
             else
@@ -163,65 +174,36 @@ namespace vkParser
                 Console.WriteLine("Ссылок не нашел.");
             }
 
-            string[] arrayContentParsed = HTML_Posts_Text.Split('(', ')');
-            List<string> ListURLImages = arrayContentParsed.ToList().FindAll(i => i.StartsWith("https://pp") == true);
-
-            return ListURLImages;
+            return List_URL_Images;
         }
 
-        //private static void DownloadFiles(string site)
-        //{
-        //    WebClient client = new WebClient();
+        public static string ScrapeData(string page)
+        {
+            var web = new HtmlWeb();
 
-        //    // Получаем содержимое страницы
-        //    string data;
-        //    using (Stream stream = client.OpenRead(site))
-        //    {
-        //        using (StreamReader reader = new StreamReader(stream))
-        //        {
-        //            data = reader.ReadToEnd();
-        //        }
-        //    }
+            var doc = web.Load(page);
 
-        //    // Парсим теги изображений
-        //    Regex regex = new Regex(@"\<img.+?src=\""(?<imgsrc>.+?)\"".+?\>", RegexOptions.ExplicitCapture);
-        //    MatchCollection matches = regex.Matches(data);
+            var Post = doc.DocumentNode.SelectNodes("//*[@class = 'page_post_sized_thumbs  clear_fix']"); //Парсим HTML страницу по классам
 
-        //    // Регекс для проверки на корректную ссылку картинки
-        //    Regex fileRegex = new Regex(@"[^\s\/]\.(jpg|png|gif|bmp)\z", RegexOptions.Compiled);
 
-        //    // Получаем ссылки на картинки
-        //    var imagesUrl = matches
-        //        .Cast<Match>()
-        //        // Данный из группы регулярного выражения
-        //        .Select(m => m.Groups["imgsrc"].Value.Trim())
-        //        // Добавляем название сайта, если ссылки относительные
-        //        .Select(url => url.Contains("http://") ? url : (site + url))
-        //        // Получаем название картинки
-        //        .Select(url => new { url, name = url.Split(new[] { '/' }).Last() })
-        //        // Проверяем его
-        //        .Where(a => fileRegex.IsMatch(a.name))
-        //        // Удаляем повторяющиеся элементы
-        //        .Distinct()
-        //        ;
-        //    try
-        //    {
-        //        // Загружаем картинки
-        //        foreach (var value in imagesUrl)
-        //        {
-        //            Console.WriteLine(value);
-        //            // Директория для загрузки
-        //            string directory = "C:\\Users\\fzhil\\Downloads\\vk";
-        //            Directory.CreateDirectory(directory);
-        //            Console.WriteLine(directory);
-        //            client.DownloadFile(value.url, Path.Combine(directory, value.name));
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.ToString());
-        //    }
+            string[] separators = new string[2];
+            separators[0] = "<a";
+            separators[1] = "a>";
 
-        //}
+            string[] Post_HTML_View = Post[0].InnerHtml.ToString().Split(separators, StringSplitOptions.RemoveEmptyEntries); //Картинка поста - первый по порядку див-класс (поэтому нулевой), картинки в коментах - [1],...,[n]
+
+            if (Post_HTML_View.Count() < 2) //Проверяем состоит ли пост из нескольких мемов
+            {
+                string[] tempArray = Post_HTML_View[0].ToString().Split('(', ')');
+                List<string> ListURLImages = tempArray.ToList().FindAll(i => i.StartsWith("http") == true);
+
+                return ListURLImages[0]; //Возвращаем ссылку на картинку поста
+            }
+            else
+            {
+                return null;
+            }
+
+        }
     }
 }
