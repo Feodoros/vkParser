@@ -14,30 +14,19 @@ namespace vkParser
     {
         static void Main(string[] args)
         {
-            string pathToSave0 = "C:\\Users\\Александр\\Desktop\\Мемы_Приколы\\";
-            string pathToSave1 = "C:\\Users\\Александр\\Desktop\\мемная_папка\\";
-            string pathToSave2 = "C:\\Users\\Александр\\Desktop\\МЕМЫ\\";
-            string pathToSave3 = "C:\\Users\\Александр\\Desktop\\MDK\\";
-            string pathToSave4 = "C:\\Users\\Александр\\Desktop\\абстрактные_мемы_для_элиты_всех_сортов\\";
-            string pathToSave5 = "C:\\Users\\Александр\\Desktop\\сомнительные_картинки_и_подписи_к_ним\\";
-            string pathToSave6 = "C:\\Users\\Александр\\Desktop\\Даркнет_который_мы_заслужили\\";
-            string pathToSave7 = "C:\\Users\\Александр\\Desktop\\4ch\\";
-            string pathToSave8 = "C:\\Users\\Александр\\Desktop\\ЗШ\\";
-            string pathToSave9 = "C:\\Users\\Александр\\Desktop\\DESUCHAN\\";            
-
             string content = "";
 
             //          паблик     топ 50  (.)  дней назад (100)
-            string arg1 = Const.s1 + " --top 50 -w 8 -d 100";
-            string arg2 = Const.s2 + " --top 50 -w 8 -d 100";
-            string arg3 = Const.s3 + " --top 50 -w 8 -d 100";
-            string arg4 = Const.s4 + " --top 50 -w 8 -d 100";
-            string arg5 = Const.s5 + " --top 50 -w 8 -d 100";
-            string arg6 = Const.s6 + " --top 50 -w 8 -d 100";
-            string arg7 = Const.s7 + " --top 50 -w 8 -d 100";
-            string arg8 = Const.s8 + " --top 50 -w 8 -d 100";
-            string arg9 = Const.s9 + " --top 50 -w 8 -d 100";
-            string arg10 = Const.s10 + "--top 50 -w 8 -d 100";
+            string arg1 = Const.s1 + " --top 50 -w 10 -d 100";
+            string arg2 = Const.s2 + " --top 50 -w 10 -d 100";
+            string arg3 = Const.s3 + " --top 50 -w 10 -d 100";
+            string arg4 = Const.s4 + " --top 50 -w 10 -d 100";
+            string arg5 = Const.s5 + " --top 50 -w 10 -d 100";
+            string arg6 = Const.s6 + " --top 50 -w 10 -d 100";
+            string arg7 = Const.s7 + " --top 50 -w 10 -d 100";
+            string arg8 = Const.s8 + " --top 50 -w 10 -d 100";
+            string arg9 = Const.s9 + " --top 50 -w 10 -d 100";
+            //string arg10 = Const.s10 + "--top 50 -w 10 -d 100";
 
             Task task1 = Task.Run(() =>
             {
@@ -64,7 +53,7 @@ namespace vkParser
                 procCommand.WaitForExit();
                 Console.WriteLine(content);
 
-            });         
+            });
 
             Task task2 = task1.ContinueWith(ant =>
             {
@@ -193,56 +182,28 @@ namespace vkParser
                 procCommand.WaitForExit();
             });
 
-            Task task10 = task9.ContinueWith(ant =>
+            //Task task10 = task9.ContinueWith(ant =>
+            //{
+            //    Console.WriteLine("10");
+            //    ProcessStartInfo psiOpt = new ProcessStartInfo(Const.command, arg10);
+            //    psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
+            //    psiOpt.RedirectStandardOutput = true;
+            //    psiOpt.UseShellExecute = false;
+            //    psiOpt.CreateNoWindow = true;
+            //    Process procCommand = Process.Start(psiOpt);
+            //    StreamReader srIncoming = procCommand.StandardOutput;
+            //    content += srIncoming.ReadToEnd();
+            //    Console.WriteLine(content);
+
+            //    procCommand.WaitForExit();
+            //});
+
+
+            Task finalTask = Task.Factory.ContinueWhenAll(new Task[] { task1, task2, task3, task4, task5, task6, task7, task8, task9/*, task10*/ }, ant =>
             {
-                Console.WriteLine("10");
-                ProcessStartInfo psiOpt = new ProcessStartInfo(Const.command, arg10);
-                psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
-                psiOpt.RedirectStandardOutput = true;
-                psiOpt.UseShellExecute = false;
-                psiOpt.CreateNoWindow = true;
-                Process procCommand = Process.Start(psiOpt);
-                StreamReader srIncoming = procCommand.StandardOutput;
-                content += srIncoming.ReadToEnd();
-                Console.WriteLine(content);
 
-                procCommand.WaitForExit();
-            });
-
-
-            Task finalTask = Task.Factory.ContinueWhenAll(new Task[] { task1, task2, task3, task4, task5, task6, task7, task8, task9, task10 }, ant =>
-            {
-                int i = 0;
-               // Console.WriteLine(content);
-                List<string> ListURLImages = Parser_Images_From_Posts(content);
-
-                using (WebClient client = new WebClient())
-                {
-                    foreach (string image in ListURLImages)
-                    {
-                       if (i/50 == 0)
-                        client.DownloadFile(image, pathToSave0 + (i % 50).ToString() + ".jpg");
-                        if (i / 50 == 1)
-                            client.DownloadFile(image, pathToSave1 + (i % 50).ToString() + ".jpg");
-                        if (i / 50 == 2)
-                            client.DownloadFile(image, pathToSave2 + (i % 50).ToString() + ".jpg");
-                        if (i / 50 == 3)
-                            client.DownloadFile(image, pathToSave3 + (i % 50).ToString() + ".jpg");
-                        if (i / 50 == 4)
-                            client.DownloadFile(image, pathToSave4 + (i % 50).ToString() + ".jpg");
-                        if (i / 50 == 5)
-                            client.DownloadFile(image, pathToSave5 + (i % 50).ToString() + ".jpg");
-                        if (i / 50 == 6)
-                            client.DownloadFile(image, pathToSave6 + (i % 50).ToString() + ".jpg");
-                        if (i / 50 == 7)
-                            client.DownloadFile(image, pathToSave7 + (i % 50).ToString() + ".jpg");
-                        if (i / 50 == 8)
-                            client.DownloadFile(image, pathToSave8 + (i % 50).ToString() + ".jpg");
-                        if (i / 50 == 9)
-                            client.DownloadFile(image, pathToSave9 + (i % 50).ToString() + ".jpg");
-                        i++;
-                    }
-                }
+                // Console.WriteLine(content);
+                Download_Images_From_Posts(content);
 
                 Console.WriteLine("Готово.");
             });
@@ -252,29 +213,55 @@ namespace vkParser
         }
 
 
-        public static List<string> Parser_Images_From_Posts(string content)
+        public static void Download_Images_From_Posts(string content)
         {
-            int i1 = 0;
+            int index = 0;
+            string tempURL = "";
             string[] arrayContent = content.Split(' ');
-            List<string> s1 = arrayContent.ToList().FindAll(i => i.StartsWith("http") == true); //Список ссылок на посты
-            List<string> List_HTML_Data = new List<string>();  //Список постов в формате HTML
+            List<string> List_URL_Post = arrayContent.ToList().FindAll(i => i.StartsWith("http") == true); //Список ссылок на посты
+            //List<string> List_HTML_Data = new List<string>();  //Список постов в формате HTML
             List<string> List_URL_Images = new List<string>(); //Список адресов картинок из постов
 
-            if (s1.Count > 0)
+            if (List_URL_Post.Count > 0)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Ссылки на посты:");
                 Console.ForegroundColor = ConsoleColor.White;
 
-                foreach (string match in s1)
+                foreach (string match in List_URL_Post)
                 {
-                    i1++;
-                    Console.WriteLine(i1.ToString() + " " + match);
+                    index++;
 
                     if (ScrapeData(match) != null)
-                        List_URL_Images.Add(ScrapeData(match));
+                    {
+                        tempURL = ScrapeData(match);
+                        Console.WriteLine(index.ToString() + " " + match);
+
+                        using (WebClient client = new WebClient())
+                        {
+                            if (index / 50 == 0)
+                                client.DownloadFile(tempURL, Const.pathToSave0 + (index % 50).ToString() + ".jpg");
+                            if (index / 50 == 1)
+                                client.DownloadFile(tempURL, Const.pathToSave1 + (index % 50).ToString() + ".jpg");
+                            if (index / 50 == 2)
+                                client.DownloadFile(tempURL, Const.pathToSave2 + (index % 50).ToString() + ".jpg");
+                            if (index / 50 == 3)
+                                client.DownloadFile(tempURL, Const.pathToSave3 + (index % 50).ToString() + ".jpg");
+                            if (index / 50 == 4)
+                                client.DownloadFile(tempURL, Const.pathToSave4 + (index % 50).ToString() + ".jpg");
+                            if (index / 50 == 5)
+                                client.DownloadFile(tempURL, Const.pathToSave5 + (index % 50).ToString() + ".jpg");
+                            if (index / 50 == 6)
+                                client.DownloadFile(tempURL, Const.pathToSave6 + (index % 50).ToString() + ".jpg");
+                            if (index / 50 == 7)
+                                client.DownloadFile(tempURL, Const.pathToSave7 + (index % 50).ToString() + ".jpg");
+                            if (index / 50 == 8)
+                                client.DownloadFile(tempURL, Const.pathToSave8 + (index % 50).ToString() + ".jpg");
+                        }
+                    }
+
                     else
-                        Console.WriteLine(match + " - пост из нескольких картинок.");
+                        Console.WriteLine(index.ToString() + " " + match + " - пост из нескольких картинок или без картинок вовсе.");
                 }
             }
             else
@@ -282,10 +269,9 @@ namespace vkParser
                 Console.WriteLine("Ссылок не нашел.");
             }
 
-            return List_URL_Images;
         }
 
-        public static string ScrapeData(string page)
+        public static string ScrapeData(string page) //Парсер
         {
             var web = new HtmlWeb();
 
@@ -314,7 +300,7 @@ namespace vkParser
                     return null;
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) //Пост текстовой, без картинок
             {
 
                 Console.WriteLine(ex.ToString());
